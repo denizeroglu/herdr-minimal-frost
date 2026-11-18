@@ -88,7 +88,7 @@ Colours:
   | `frost-pane-header` | `pane` | no background |
   | `frost-menu` | `menu` | `.rounded(12)` |
   | `frost-new-menu` | `new-menu` | `.rounded(12)` |
-  | `frost-picker` | `picker` | `.rounded(12)`; tabs listed by the same name the tab bar shows (an agent's live title) rather than their number |
+  | `frost-picker` | `picker` | `.rounded(12)`; no letter tiles on space headings; tabs listed by the same name the tab bar shows (an agent's live title) rather than their number |
 
 - **Shipped mods used as they are:** `workspace-chrome` (footer), `workspace-status`, `files` and `changes`, plus icons from `mods/workspace-chrome/` and `mods/pane/`.
 - **Herdr functions and commands:** the copied mods call the same ones as the originals: `run`, `openOverlay`, `spaces()`, `agents()`, `panes()`, `layout()`, and `mod.open`.
