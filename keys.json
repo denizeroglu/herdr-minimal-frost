@@ -1,0 +1,5 @@
+{
+  "layout:minimal-frost": {
+    "cmd-p": "mod.open:frost-picker"
+  }
+}
