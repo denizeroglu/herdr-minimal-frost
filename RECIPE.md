@@ -13,7 +13,7 @@ Left to right, top to bottom:
   - **Spaces**: space names only, with no coloured letter tiles, plus their git branch and changes.
   - **Agents**: Herdr's agent list without program icons. Its "Sort agents" popup has 12 px rounded corners.
   - **Footer** (69 px): Settings and Add machine.
-- **Tab bar** (42 px, same tint): tabs with no fill. The active tab has a faint fill (`selected`, `#ffffff1f`) and full-white text, and inactive tabs use 70% white text. **+** is on the right.
+- **Tab bar** (42 px, same tint): tabs with no fill. The active tab has a faint fill (`selected`, `#ffffff2e`) and full-white text, and inactive tabs use 70% white text. **+** is on the right.
 - **Content area** (same tint, 8 px padding):
   - Terminal panes are cards with a 12 px radius, an 8 px gap and a clear background.
   - Borders are a 1 px hairline: `#ffffff14` (8% white), and `#ffffff40` (25% white) on the focused pane.
