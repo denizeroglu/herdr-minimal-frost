@@ -4,6 +4,9 @@ import { View, div, image, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { agents, terminals, panes, focused, spaces, run, theme, shared, setShared, setAgentOrder, openOverlay, closeOverlay, props, window, layout } from "herdr";
 
+// Minimal Frost: a very faint outline around the selected row.
+const SELECTED_OUTLINE = "#ffffff1a";
+
 function find(node, id) {
   if (node?.id === id) return node;
   for (const child of node?.children ?? []) {
@@ -195,7 +198,8 @@ export default class Agents extends View {
       .gap(0)
       .items_center()
       .text_size(12.5)
-      .when(on, (el) => el.bg(t.raised))
+      .border(1).border_color(on ? SELECTED_OUTLINE : "#00000000")
+      .when(on, (el) => el.bg(t.selected))
       .hover((s) => s.bg(t.hover))
       .on_click(() => (this.listed.has(k.address) ? run("pane.focus", { terminal: k.address }) : this.peek(k.address)))
       .children(s.lines.map(l => div().self_start().mt(-4).w(9).h(17).mr(4).flex_none()
@@ -346,6 +350,7 @@ export default class Agents extends View {
         .rounded(8)
         .items_center()
         .gap(9)
+        .border(1).border_color(a.focused ? SELECTED_OUTLINE : "#00000000")
         .when(a.focused, (el) => el.bg(t.selected))
         .cursor_pointer()
         .hover((s) => s.bg(t.hover))
