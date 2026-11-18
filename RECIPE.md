@@ -11,7 +11,7 @@ Left to right, top to bottom:
 - **Sidebar** (268 px wide, tint `#313233b3`):
   - **Top row** (46 px): traffic lights, then search and sidebar-toggle buttons on the right. No app logo or name.
   - **Spaces**: space names only, with no coloured letter tiles, plus their git branch and changes.
-  - **Agents**: Herdr's agent list. Its "Sort agents" popup has 12 px rounded corners.
+  - **Agents**: Herdr's agent list without program icons. Its "Sort agents" popup has 12 px rounded corners.
   - **Footer** (69 px): Settings and Add machine.
 - **Tab bar** (42 px, same tint): tabs with no fill. The active tab has a faint fill (`selected`, `#ffffff10`) and full-white text, and inactive tabs use 70% white text. **+** is on the right.
 - **Content area** (same tint, 8 px padding):
@@ -83,7 +83,7 @@ Colours:
   |---|---|---|
   | `frost-sidebar` | `workspace-chrome` | logo and "Herdr" title removed; search opens `frost-picker` |
   | `frost-spaces` | `spaces` | coloured letter tile removed from rows (kept on the collapsed rail); space menu opens `frost-menu` |
-  | `frost-agents` | `agents` | Sort agents popup gets `.rounded(12)` |
+  | `frost-agents` | `agents` | no program icons on agent rows; Sort agents popup gets `.rounded(12)` |
   | `frost-tab-bar` | `tabs` | active tab fill `selected` (was `raised`); tab menu opens `frost-menu`, + opens `frost-new-menu` |
   | `frost-pane-header` | `pane` | no background |
   | `frost-menu` | `menu` | `.rounded(12)` |
@@ -101,6 +101,7 @@ Colours:
 
 ## Watch out
 
+- **Sub-agents:** in Herdr's agents list, the program icon is also the button that folds an agent's sub-agents. Without icons, sub-agents always show unfolded.
 - **The tint only reads as glass with blur.** On a platform without window blur, `#313233b3` sits over nothing and looks flat. Raise the tint's alpha there.
 - **Window base:** the theme's `background` is painted under the whole window. It has to be translucent (`#1a1a1a33`) for anything to be see-through. Setting only `canvas`/`chrome` transparent does nothing.
 - **Terminal background:** terminals draw their background from that same colour. A fully clear `background` (`#00000000`) makes terminals black, so keep some alpha.

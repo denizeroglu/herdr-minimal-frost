@@ -73,8 +73,9 @@ function duration(ms) {
 }
 
 // The agent's icon from the app's program table: a one-color glyph or a picture.
+// Minimal Frost shows no program icons in the agents list.
 function icon(p, size, color) {
-  if (!p?.icon) return null;
+  return null;
   return p.tint ? svg(p.icon).size(size).flex_none().text_color(color) : image(p.icon).w(size).h(size).flex_none();
 }
 
