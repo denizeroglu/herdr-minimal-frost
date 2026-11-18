@@ -1,5 +1,6 @@
 {
   "layout:minimal-frost": {
-    "cmd-p": "mod.open:frost-picker"
+    "cmd-p": "mod.open:frost-picker",
+    "ctrl-shift-k": "mod.open:frost-picker"
   }
 }

@@ -23,8 +23,8 @@ Left to right, top to bottom:
 
 Type:
 
-- **Terminals:** Geist Mono, 13 px, weight 400 (Regular)
-- **Interface:** SF Pro Text
+- **Terminals:** Geist Mono, weight 400 (Regular); size from the person's Settings
+- **Interface:** Figtree (variable, bundled in `mods/frost-sidebar/fonts/`)
 
 Colours:
 
@@ -34,8 +34,9 @@ Colours:
 - **Interface colours** (layout `colors`):
   - Labels: secondary 70% white, dim 50% white
   - Accent: neutral `#d4d4d4`
-  - Working: macOS system blue `#0a84ff`
-  - Menus and dialogs: `#1a1a1acc`
+  - Working: system blue `#0a84ff`
+  - Panels (`popover`, `surface`), i.e. menus, the picker, dialogs and Settings: solid `#313233`, the glass tint at full opacity
+  - Buttons and selections inside panels (`raised`): solid `#3d3e3f`
   - Window base tint: `#1a1a1a33`
   - All borders transparent
 
@@ -46,10 +47,10 @@ Colours:
   - **blocked:** the theme's needs-you colour and a "Needs you" badge on the pane
   - **done:** a dot
   - **idle:** no mark
-- **Glass:** with `window_blur`, macOS blurs the desktop behind every surface. Everything is tinted by the same `#313233b3`, so the window reads as one surface.
+- **Glass:** with `window_blur`, the system blurs the desktop behind every surface. Everything is tinted by the same `#313233b3`, so the window reads as one surface.
 - **Menus and dialogs** use 80% of the sidebar's colour. Herdr can't blur its own content, so a lighter tint would let terminal text show through.
 - **Rounded popups:**
-  - **12 px corners:** right-click menus (terminal, tab, space), the **+** menu, the Go to… picker (⌘P and the sidebar search button) and the Sort agents popup
+  - **12 px corners:** right-click menus (terminal, tab, space), the **+** menu, the Go to… picker (⌘P / Ctrl+Shift+K and the sidebar search button) and the Sort agents popup
   - **Still square:** the command palette (⌘⇧P), which is Herdr's own screen and can't be modified
 - **Hover:** tabs, rows and buttons show a 4% white highlight (`#ffffff0a`).
 - **Move to space…** (optional): with the separate [move-to-space](https://github.com/denizeroglu/herdr-move-to-space) mod installed, the terminal menu and the menu of a one-pane tab offer it for the clicked session. Without the mod the item doesn't appear.
@@ -74,7 +75,7 @@ Colours:
      └─ status block 28px, #313233b3 ……… workspace-status   (shipped)
   ```
   Root settings:
-  - `ui_font` SF Pro Text, `font` Geist Mono, `font_size` 13, `font_weight` 400
+  - `ui_font` Figtree, `font` Geist Mono, `font_weight` 400; no `font_size`, so Settings controls it
   - `terminal_padding` [24, 24], `terminal_opacity` 0
   - `terminal_menu` frost-menu
   - `colors` as listed under What you see
@@ -98,7 +99,7 @@ Colours:
   - `frost-menu` runs `git` for worktree items.
   - `frost-picker` calls `hc`.
 - **Network:** none.
-- **`keys.json`:** `layout:minimal-frost` → `cmd-p` opens `frost-picker`.
+- **`keys.json`:** `layout:minimal-frost` → `cmd-p` and `ctrl-shift-k` open `frost-picker`.
 
 ## Watch out
 
@@ -108,8 +109,9 @@ Colours:
 - **Terminal background:** terminals draw their background from that same colour. A fully clear `background` (`#00000000`) makes terminals black, so keep some alpha.
 - **Removing lines:** making `border` transparent removes the section lines. It also removes outlines from menus, dialogs and the Files/Changes panel.
 - **Pane borders** are set explicitly on the pane frame, so they stay visible.
-- **Dialogs and the palette** can't be frosted. Herdr has no blur for its own content, so they stay at 80% to avoid text bleeding through.
-- **SF Pro Text is macOS-only.** Elsewhere the interface falls back to Herdr's default font.
+- **Dialogs, menus and Settings** can't be frosted. Herdr has no blur for its own content, so they're solid `#313233` (`popover`, `surface`); anything translucent lets terminal text show through.
+- **Keep `background` translucent.** Making it solid to fix panels removes the main window's glass. Set `popover`/`surface` instead.
+- **Fonts:** Figtree loads from `mods/frost-sidebar/fonts/`. Keep that folder with the mod.
 - **Your keys.json:** merging this `keys.json` into your own stops Herdr from adding new default shortcuts to that file on updates.
 - **Screenshots:** `herdr-app shot` doesn't capture the desktop behind the window. `preview.png` shows the transparent areas flattened to grey.
 
@@ -119,9 +121,9 @@ Colours:
 - `herdr-app do layout.switch '{"name":"minimal-frost"}'` applies with `herdr-app status` showing `"errors": []`.
 - No lines separate the sidebar, tab bar, content and status bar.
 - Desktop shows blurred through all four of them, in the same grey tint.
-- Terminals show the blurred desktop behind their text, and their text uses the Minimal Frost palette in Geist Mono 13.
+- Terminals show the blurred desktop behind their text, and their text uses the Minimal Frost palette in Geist Mono.
 - The active tab has a faint fill, and other tabs have none.
 - Space rows show names without letter tiles.
 - Pane title rows have no background.
-- Right-clicking a terminal, tab or space opens a menu with rounded corners, and so do **+**, ⌘P and Sort agents.
+- Right-clicking a terminal, tab or space opens a menu with rounded corners, and so do **+**, ⌘P / Ctrl+Shift+K and Sort agents.
 - An agent at work shows a blue spinner.

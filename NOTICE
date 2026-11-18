@@ -5,3 +5,7 @@ The mods in mods/frost-* are modified copies of mods shipped with Herdr
 Each mod.json records the Herdr mod it was copied from under "cloned_from";
 the changes made to each are listed in RECIPE.md under "Built from".
 layouts/minimal-frost.json is derived from Herdr's "main" layout.
+
+mods/frost-sidebar/fonts/ contains Figtree (https://github.com/erikdkennedy/figtree),
+Copyright 2022 The Figtree Project Authors, licensed under the SIL Open Font
+License 1.1 (see mods/frost-sidebar/fonts/OFL.txt).

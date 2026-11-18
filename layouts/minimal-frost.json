@@ -182,7 +182,9 @@
     "dim": "#ffffff80",
     "background": "#1a1a1a33",
     "working": "#0a84ff",
-    "popover": "#1a1a1acc"
+    "popover": "#313233",
+    "surface": "#313233",
+    "raised": "#3d3e3f"
   },
   "terminal_padding": [
     24,
@@ -195,7 +197,7 @@
     16
   ],
   "window_blur": true,
-  "ui_font": "SF Pro Text",
+  "ui_font": "Figtree",
   "font": "Geist Mono",
   "terminal_menu": "frost-menu",
   "cloned_from": {
@@ -204,6 +206,5 @@
   },
   "theme": "minimal-frost",
   "preview": "layouts/minimal-frost.png",
-  "font_size": 13,
   "font_weight": 400
 }
