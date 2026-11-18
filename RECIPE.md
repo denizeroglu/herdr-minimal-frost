@@ -10,10 +10,10 @@ Left to right, top to bottom:
 
 - **Sidebar** (268 px wide, tint `#313233b3`):
   - **Top row** (46 px): traffic lights, then search and sidebar-toggle buttons on the right. No app logo or name.
-  - **Spaces**: space names only, with no coloured letter tiles, plus their git branch and changes.
+  - **Spaces**: space names only, with no coloured letter tiles, plus their git branch and changes. The selected space has the same faint fill and 1 px outline as the active tab.
   - **Agents**: Herdr's agent list without program icons. Its "Sort agents" popup has 12 px rounded corners.
   - **Footer** (69 px): Settings and Add machine.
-- **Tab bar** (42 px, same tint): tabs with no fill. The active tab has a faint fill (`selected`, `#ffffff2e`) and full-white text, and inactive tabs use 70% white text. **+** is on the right.
+- **Tab bar** (42 px, same tint): tabs with no fill. The active tab has a faint fill (`selected`, `#ffffff10`), a very faint 1 px outline (`#ffffff1a`) and full-white text, and inactive tabs use 70% white text. **+** is on the right.
 - **Content area** (same tint, 8 px padding):
   - Terminal panes are cards with a 12 px radius, an 8 px gap and a clear background.
   - Borders are a 1 px hairline: `#ffffff14` (8% white), and `#ffffff40` (25% white) on the focused pane.
@@ -82,9 +82,9 @@ Colours:
   | Mod | Copied from | Change |
   |---|---|---|
   | `frost-sidebar` | `workspace-chrome` | logo and "Herdr" title removed; search opens `frost-picker` |
-  | `frost-spaces` | `spaces` | coloured letter tile removed from rows (kept on the collapsed rail); space menu opens `frost-menu` |
+  | `frost-spaces` | `spaces` | coloured letter tile removed from rows (kept on the collapsed rail); selected row gets a 1 px `#ffffff1a` outline; space menu opens `frost-menu` |
   | `frost-agents` | `agents` | no program icons on agent rows; Sort agents popup gets `.rounded(12)` |
-  | `frost-tab-bar` | `tabs` | active tab fill `selected` (was `raised`); tab menu opens `frost-menu`, + opens `frost-new-menu` |
+  | `frost-tab-bar` | `tabs` | active tab fill `selected` (was `raised`) with a 1 px `#ffffff1a` outline; tab menu opens `frost-menu`, + opens `frost-new-menu` |
   | `frost-pane-header` | `pane` | no background |
   | `frost-menu` | `menu` | `.rounded(12)` |
   | `frost-new-menu` | `new-menu` | `.rounded(12)` |

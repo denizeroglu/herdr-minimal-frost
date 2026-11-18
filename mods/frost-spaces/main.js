@@ -7,6 +7,9 @@ import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, ScrollHandle } from "gpui-base";
 import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout } from "herdr";
 
+// Minimal Frost: a very faint outline around the selected row.
+const SELECTED_OUTLINE = "#ffffff1a";
+
 function find(node, id) {
   if (node?.id === id) return node;
   for (const child of node?.children ?? []) {
@@ -455,6 +458,7 @@ export default class Spaces extends View {
       .flex_none()
       .justify_center()
       .rounded(8)
+      .border(1).border_color(on ? SELECTED_OUTLINE : "#00000000")
       .when(on, (el) => el.bg(t.selected))
       .when(!on, (el) => el.hover((s) => s.bg(t.hover)))
       .when(this.pressed === w.id && this.over !== w.id, (el) => el.opacity(0.5))
@@ -506,6 +510,7 @@ export default class Spaces extends View {
       .rounded(6)
       .justify_center()
       .items_center()
+      .border(1).border_color(w.active ? SELECTED_OUTLINE : "#00000000")
       .when(w.active, (el) => el.bg(t.selected))
       .when(!w.active, (el) => el.hover((s) => s.bg(t.hover)))
       .on_click(() => run("space.select", { id: w.id }))

@@ -175,7 +175,7 @@
     "chrome": "#00000000",
     "border": "#00000000",
     "hover": "#ffffff0a",
-    "selected": "#ffffff2e",
+    "selected": "#ffffff10",
     "accent": "#d4d4d4",
     "accent_foreground": "#111111",
     "muted": "#ffffffb3",
