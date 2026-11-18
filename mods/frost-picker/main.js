@@ -6,7 +6,21 @@
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { agents, spaces, terminals, run, hc, theme, settings, props, closeOverlay, openOverlay, shared, setShared } from "herdr";
+import { agents, spaces, terminals, panes, run, hc, theme, settings, props, closeOverlay, openOverlay, shared, setShared } from "herdr";
+
+// A tab's name as the tab bar shows it: a name the person gave stays; an
+// unnamed tab (or one named after its program) follows its agent's live title.
+const clean = (s) => (s ?? "").replace(/^[^\p{L}\p{N}\p{Ps}\p{Pi}]+/u, "").replace(/^\[ [!.] \] /, "").trim();
+function tabLabel(tab) {
+  const lead = panes().find((p) => p.tab === tab.id && p.program?.agent) ?? panes().find((p) => p.tab === tab.id);
+  const prog = lead?.program?.name;
+  const base = tab.named ? tab.name : prog ?? "Terminal";
+  if (!lead?.program?.agent) return base;
+  const live = clean(lead.title);
+  const path = /^[~/]|^[A-Za-z]:\\/.test((lead.title ?? "").replace(/^[^\p{L}\p{N}~/]+/u, ""));
+  const telling = live && live !== lead.terminal && live !== prog && !path && !live.includes("@") && live.toLowerCase() !== lead.program.key;
+  return (tab.name === prog || !tab.named) && telling ? live : base;
+}
 
 const MARK = { ansi6: "#22a99a", ansi3: "#e3814f", ansi4: "#5b8def", ansi5: "#8b7cf6", ansi2: "#3fae6a", ansi1: "#d9649a" };
 
@@ -78,9 +92,9 @@ export default class Picker extends View {
       const ctxs = w.tabs
         .map((ctx) => {
           const mine = all.filter((a) => a.tab === ctx.id);
-          return { w, ctx, mine, team: teamOf(mine.map((a) => a.address)) };
+          return { w, ctx, mine, title: tabLabel(ctx), team: teamOf(mine.map((a) => a.address)) };
         })
-        .filter((c) => !f || [w.name, c.ctx.name, ...c.mine.map((a) => a.program?.name ?? "")].join(" ").toLowerCase().includes(f));
+        .filter((c) => !f || [w.name, c.ctx.name, c.title, ...c.mine.map((a) => a.program?.name ?? "")].join(" ").toLowerCase().includes(f));
       return { w, ctxs };
     });
     const busy = groups.filter((p) => p.w.status && p.ctxs.length);
@@ -218,7 +232,7 @@ export default class Picker extends View {
         .hover((s) => s.bg(t.hover))
         .on_click(() => this.go(r))
         .child(this.glyph(t, r.ctx.status))
-        .child(div().flex_1().truncate().text_color(t.foreground).when(here, (d) => d.font_semibold()).child(r.ctx.name))
+        .child(div().flex_1().truncate().text_color(t.foreground).when(here, (d) => d.font_semibold()).child(r.title))
         .when(r.ctx.status === "blocked", (el) => el.child(div().text_size(11).text_color(t.blocked).child("needs you")))
         .when(r.ctx.status === "done", (el) => el.child(div().text_size(11).text_color(t.done).child("finished")))
         .child(div().text_size(11).text_color(t.dim).child(who + (r.team ? `  +${r.team}` : "")));
