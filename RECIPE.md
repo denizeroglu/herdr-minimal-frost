@@ -8,7 +8,7 @@ A quiet, frosted take on Herdr's default layout. The whole window is one sheet o
 
 Left to right, top to bottom:
 
-- **Sidebar** (268 px wide, tint `#3232328c`):
+- **Sidebar** (268 px wide, tint `#313233b3`):
   - **Top row** (46 px): traffic lights, then search and sidebar-toggle buttons on the right. No app logo or name.
   - **Spaces**: space names only, with no coloured letter tiles, plus their git branch and changes.
   - **Agents**: Herdr's agent list. Its "Sort agents" popup has 12 px rounded corners.
@@ -46,7 +46,7 @@ Colours:
   - **blocked:** the theme's needs-you colour and a "Needs you" badge on the pane
   - **done:** a dot
   - **idle:** no mark
-- **Glass:** with `window_blur`, macOS blurs the desktop behind every surface. Everything is tinted by the same `#3232328c`, so the window reads as one surface.
+- **Glass:** with `window_blur`, macOS blurs the desktop behind every surface. Everything is tinted by the same `#313233b3`, so the window reads as one surface.
 - **Menus and dialogs** use 80% of the sidebar's colour. Herdr can't blur its own content, so a lighter tint would let terminal text show through.
 - **Rounded popups:**
   - **12 px corners:** right-click menus (terminal, tab, space), the **+** menu, the Go to… picker (⌘P and the sidebar search button) and the Sort agents popup
@@ -59,18 +59,18 @@ Colours:
 - **Layout `layouts/minimal-frost.json`:** a clone of Herdr's `main` (version 0.1.16). Its node tree:
   ```
   root row (titlebar none, traffic_lights [12,16], window_blur, theme minimal-frost)
-  ├─ sidebar column 268px, background #3232328c
+  ├─ sidebar column 268px, background #313233b3
   │  ├─ brand block 46px, window_drag ……… frost-sidebar
   │  ├─ sidebar-lists column
   │  │  ├─ spaces block ………………………… frost-spaces
   │  │  └─ agents block ………………………… frost-agents
   │  └─ sidebar-footer block 69px ………… workspace-chrome {footer: true}   (shipped)
   └─ work column
-     ├─ tabs block 42px, window_drag, #3232328c … frost-tab-bar
-     ├─ work-body row, padding 8, #3232328c
+     ├─ tabs block 42px, window_drag, #313233b3 … frost-tab-bar
+     ├─ work-body row, padding 8, #313233b3
      │  ├─ main block: tab active, pane frame (header frost-pane-header, radius 12, gap 8)
      │  └─ panel column (hidden): files / changes stack   (shipped)
-     └─ status block 28px, #3232328c ……… workspace-status   (shipped)
+     └─ status block 28px, #313233b3 ……… workspace-status   (shipped)
   ```
   Root settings:
   - `ui_font` SF Pro Text, `font` Geist Mono, `font_size` 13, `font_weight` 400
@@ -101,7 +101,7 @@ Colours:
 
 ## Watch out
 
-- **The tint only reads as glass with blur.** On a platform without window blur, `#3232328c` sits over nothing and looks flat. Raise the tint's alpha there.
+- **The tint only reads as glass with blur.** On a platform without window blur, `#313233b3` sits over nothing and looks flat. Raise the tint's alpha there.
 - **Window base:** the theme's `background` is painted under the whole window. It has to be translucent (`#1a1a1a33`) for anything to be see-through. Setting only `canvas`/`chrome` transparent does nothing.
 - **Terminal background:** terminals draw their background from that same colour. A fully clear `background` (`#00000000`) makes terminals black, so keep some alpha.
 - **Removing lines:** making `border` transparent removes the section lines. It also removes outlines from menus, dialogs and the Files/Changes panel.
