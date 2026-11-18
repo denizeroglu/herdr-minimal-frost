@@ -2,10 +2,12 @@
 // props { tab: "pane" | "tab" | "space" | "global", target }.
 // ↑/↓ move, Enter runs, Esc closes. An item is [label, command, args];
 // a command "worktree" opens the worktree dialog instead.
+// Minimal Frost: "Move to space…" appears when the separate move-to-space mod
+// is installed (mods/move-to-space), and opens it for the clicked session.
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { run, props, closeOverlay, openOverlay, theme, keys, terminals, spaces, panes, exec } from "herdr";
+import { run, props, closeOverlay, openOverlay, theme, keys, terminals, spaces, panes, exec, readTextFile, appHome } from "herdr";
 
 // Where a space is now: its first terminal's live folder, else where it was made.
 function place(s) {
@@ -21,7 +23,7 @@ async function checkout(folder, on) {
   return common.stdout.trim() === `${top.stdout.trim()}/.git` ? "main" : "linked";
 }
 
-function items(p, git) {
+function items(p, git, canMove) {
   p = p ?? {};
   const tg = p.target ?? {};
   switch (p.tab) {
@@ -43,6 +45,7 @@ function items(p, git) {
               ["Zoom", "pane.zoom", { pane: tg.pane }],
             ]
           : []),
+        ...(inTab && canMove && term ? [["Move to space…", "mod.open", { name: "move-to-space", terminal: term.address }]] : []),
         ...(term
           ? [
               toProgram
@@ -54,12 +57,16 @@ function items(p, git) {
         ...(inTab ? [["Close pane", "pane.close", { pane: tg.pane }]] : []),
       ];
     }
-    case "tab":
+    case "tab": {
+      // A one-pane tab moves as its session.
+      const only = panes().filter((pane) => pane.tab === tg.id);
       return [
         ["Rename", "tab.rename", { id: tg.id }],
+        ...(canMove && only.length === 1 && only[0].terminal ? [["Move to space…", "mod.open", { name: "move-to-space", terminal: only[0].terminal }]] : []),
         ["New tab", "tab.new", { space: tg.space }],
         ["Close", "tab.close", { id: tg.id }],
       ];
+    }
     case "space":
       return [
         ["Rename", "space.rename", { id: tg.id }],
@@ -80,7 +87,7 @@ function items(p, git) {
 }
 
 function menuIcon(command) {
-  const name = command.endsWith(".close") ? "x" : command.endsWith(".rename") ? "square-pen" : command.endsWith(".new") ? "plus" : command === "worktree" ? "git-branch" : command === "app.help" ? "terminal" : command === "app.theme" ? "settings" : command === "pane.split" ? "panel-right" : command === "pane.zoom" ? "square" : "terminal";
+  const name = command.endsWith(".close") ? "x" : command.endsWith(".rename") ? "square-pen" : command.endsWith(".new") ? "plus" : command === "worktree" ? "git-branch" : command === "app.help" ? "terminal" : command === "app.theme" ? "settings" : command === "pane.split" ? "panel-right" : command === "pane.zoom" ? "square" : command === "mod.open" ? "layers" : "terminal";
   return `mods/workspace-chrome/${name}.svg`;
 }
 
@@ -96,6 +103,12 @@ export default class Menu extends View {
   init(_props, cx) {
     this.at = 0;
     this.git = null;
+    this.canMove = false;
+    cx.spawn(async (cx) => {
+      const found = await readTextFile(`${appHome()}/mods/move-to-space/main.js`).catch(() => null);
+      this.canMove = Boolean(found);
+      cx.notify();
+    });
     this.handle = cx.focus_handle();
     this.handle.focus();
     const p = props();
@@ -109,16 +122,17 @@ export default class Menu extends View {
   }
 
   choose(i, cx) {
-    const it = items(props(), this.git)[i];
+    const it = items(props(), this.git, this.canMove)[i];
     if (!it) return;
     closeOverlay(props()?.overlay);
-    if (it[1] === "worktree") openOverlay({ mod: "worktree", kind: "dialog", ...(it[2].action === "open" ? { width: 560, height: 480 } : { width: 440, height: 260 }), props: it[2] });
+    if (it[1] === "mod.open" && it[2].name === "move-to-space") openOverlay({ mod: "move-to-space", kind: "popup", width: 400, props: { terminal: it[2].terminal } });
+    else if (it[1] === "worktree") openOverlay({ mod: "worktree", kind: "dialog", ...(it[2].action === "open" ? { width: 560, height: 480 } : { width: 440, height: 260 }), props: it[2] });
     else run(it[1], it[2]);
   }
 
   render(cx) {
     const t = theme();
-    const list = items(props(), this.git);
+    const list = items(props(), this.git, this.canMove);
     return v_flex()
       .id("menu")
       .track_focus(this.handle)

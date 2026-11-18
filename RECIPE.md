@@ -52,6 +52,7 @@ Colours:
   - **12 px corners:** right-click menus (terminal, tab, space), the **+** menu, the Go to… picker (⌘P and the sidebar search button) and the Sort agents popup
   - **Still square:** the command palette (⌘⇧P), which is Herdr's own screen and can't be modified
 - **Hover:** tabs, rows and buttons show a 4% white highlight (`#ffffff0a`).
+- **Move to space…** (optional): with the separate [move-to-space](https://github.com/denizeroglu/herdr-move-to-space) mod installed, the terminal menu and the menu of a one-pane tab offer it for the clicked session. Without the mod the item doesn't appear.
 - **Unchanged from Herdr:** pane dragging, splits, zoom, the Files/Changes panel, sidebar resizing and collapsing.
 
 ## Built from
@@ -86,7 +87,7 @@ Colours:
   | `frost-agents` | `agents` | no program icons on agent rows; the focused agent (and a shown sub-agent) gets the selection fill with a 1 px `#ffffff1a` outline; Sort agents popup gets `.rounded(12)` |
   | `frost-tab-bar` | `tabs` | active tab fill `selected` (was `raised`) with a 1 px `#ffffff1a` outline; tab menu opens `frost-menu`, + opens `frost-new-menu` |
   | `frost-pane-header` | `pane` | no background |
-  | `frost-menu` | `menu` | `.rounded(12)` |
+  | `frost-menu` | `menu` | `.rounded(12)`; adds **Move to space…** to the terminal menu and to the menu of a one-pane tab, only when the separate [move-to-space](https://github.com/denizeroglu/herdr-move-to-space) mod is installed (it checks for `mods/move-to-space/main.js`) |
   | `frost-new-menu` | `new-menu` | `.rounded(12)` |
   | `frost-picker` | `picker` | `.rounded(12)`; no letter tiles on space headings; tabs listed by the same name the tab bar shows (an agent's live title) rather than their number |
 
