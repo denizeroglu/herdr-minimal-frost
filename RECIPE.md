@@ -117,7 +117,7 @@ Colours:
 - **Medium and SemiBold are renamed inside the font files.** Google's static Figtree names their family "Figtree Medium" and "Figtree SemiBold", with "Figtree" only in the typographic family name. Herdr on Windows reads only the first, so a Figtree 500 or 600 request fell back to Regular. Both files now use "Figtree" as their family name (a modified version under the OFL; Figtree has no Reserved Font Name).
 - **Restart after changing fonts.** Herdr loads bundled fonts at start, so replacing font files needs a quit and reopen (terminals keep running).
 - **Your keys.json:** merging this `keys.json` into your own stops Herdr from adding new default shortcuts to that file on updates.
-- **Screenshots:** `herdr-app shot` doesn't capture the desktop behind the window. `preview.png` shows the transparent areas flattened to grey.
+- **Screenshots:** `herdr-app shot` doesn't capture the desktop behind the window; it saves the glass as semi-transparent pixels, which look flat grey on a plain page. `preview.png` and `layouts/minimal-frost.png` are those shots composited over a blurred, generated colour backdrop so the glass reads as glass.
 
 ## Done when
 
