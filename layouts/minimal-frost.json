@@ -181,7 +181,7 @@
     "muted": "#ffffffb3",
     "dim": "#ffffff80",
     "background": "#1a1a1a33",
-    "working": "#0a84ff",
+    "working": "#ffffff",
     "popover": "#313233",
     "surface": "#313233",
     "raised": "#3d3e3f"

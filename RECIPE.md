@@ -34,7 +34,7 @@ Colours:
 - **Interface colours** (layout `colors`):
   - Labels: secondary 70% white, dim 50% white
   - Accent: neutral `#d4d4d4`
-  - Working: system blue `#0a84ff`
+  - Working: white `#ffffff`
   - Panels (`popover`, `surface`), i.e. menus, the picker, dialogs and Settings: solid `#313233`, the glass tint at full opacity
   - Buttons and selections inside panels (`raised`): solid `#3d3e3f`
   - Window base tint: `#1a1a1a33`
@@ -43,7 +43,7 @@ Colours:
 ## How it behaves
 
 - **Agent status:**
-  - **working:** a blue (`#0a84ff`) spinner on the tab, pane title and agent row
+  - **working:** a white (`#ffffff`) spinner on the tab, pane title and agent row
   - **blocked:** the theme's needs-you colour and a "Needs you" badge on the pane
   - **done:** a dot
   - **idle:** no mark
