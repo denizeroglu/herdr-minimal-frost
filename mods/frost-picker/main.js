@@ -6,7 +6,9 @@
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { agents, spaces, terminals, panes, run, hc, theme, settings, props, closeOverlay, openOverlay, shared, setShared } from "herdr";
+import { agents, spaces, terminals, panes, run, hc, theme, settings, props, closeOverlay, openOverlay, shared, setShared, window } from "herdr";
+// Windows draws text thinner than macOS, so text is one weight step heavier there.
+const fw = (n) => window()?.platform === "windows" ? n + 100 : n;
 
 // A tab's name as the tab bar shows it: a name the person gave stays; an
 // unnamed tab (or one named after its program) follows its agent's live title.
@@ -176,7 +178,7 @@ export default class Picker extends View {
           .gap(8)
           .items_center()
           .text_size(11)
-          .font_semibold()
+          .font_weight(fw(600))
           .text_color(t.dim)
           .child(r.w.name);
       }
@@ -231,7 +233,7 @@ export default class Picker extends View {
         .hover((s) => s.bg(t.hover))
         .on_click(() => this.go(r))
         .child(this.glyph(t, r.ctx.status))
-        .child(div().flex_1().truncate().text_color(t.foreground).when(here, (d) => d.font_semibold()).child(r.title))
+        .child(div().flex_1().truncate().text_color(t.foreground).when(here, (d) => d.font_weight(fw(600))).child(r.title))
         .when(r.ctx.status === "blocked", (el) => el.child(div().text_size(11).text_color(t.blocked).child("needs you")))
         .when(r.ctx.status === "done", (el) => el.child(div().text_size(11).text_color(t.done).child("finished")))
         .child(div().text_size(11).text_color(t.dim).child(who + (r.team ? `  +${r.team}` : "")));
@@ -260,7 +262,7 @@ export default class Picker extends View {
         cx.stop_propagation();
         cx.notify();
       })
-      .child(h_flex().items_center().child(div().flex_1().text_size(15).font_semibold().text_color(t.foreground).child("Go to…")).child(div().id("picker-esc").px(6).py(2).rounded(5).text_size(11).text_color(t.dim).cursor_pointer().hover((s) => s.bg(t.hover).text_color(t.foreground)).on_click(() => this.close()).child("Esc")))
+      .child(h_flex().items_center().child(div().flex_1().text_size(15).font_weight(fw(600)).text_color(t.foreground).child("Go to…")).child(div().id("picker-esc").px(6).py(2).rounded(5).text_size(11).text_color(t.dim).cursor_pointer().hover((s) => s.bg(t.hover).text_color(t.foreground)).on_click(() => this.close()).child("Esc")))
       .child(
         h_flex().h(36).flex_none().px(10).gap(8).items_center().rounded(9).border_1().border_color(t.accent).bg(t.background)
           .child(svg("mods/workspace-chrome/search.svg").size(15).text_color(t.dim))
@@ -288,3 +290,10 @@ export default class Picker extends View {
       );
   }
 }
+
+// Plain text inherits the root weight: Medium on Windows, Regular elsewhere.
+const render = Picker.prototype.render;
+Picker.prototype.render = function (...args) {
+  const el = render.apply(this, args);
+  return fw(400) !== 400 && el?.font_weight ? el.font_weight(fw(400)) : el;
+};

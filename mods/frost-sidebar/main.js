@@ -1,6 +1,8 @@
 import { View, div, image, svg } from "gpui-kit";
 import { h_flex, v_flex } from "gpui-base";
 import { theme, run, props, window, shared, setShared, updates, layout } from "herdr";
+// Windows draws text thinner than macOS, so text is one weight step heavier there.
+const fw = (n) => window()?.platform === "windows" ? n + 100 : n;
 
 function find(node, id) {
   if (node?.id === id) return node;
@@ -53,3 +55,10 @@ export default class WorkspaceChrome extends View {
       .when(!(collapsed && window()?.platform === "macos"), el => el.child(this.button("sidebar-toggle", svg("mods/frost-sidebar/sidebar.svg").size(15), toggleSidebar)));
   }
 }
+
+// Plain text inherits the root weight: Medium on Windows, Regular elsewhere.
+const render = WorkspaceChrome.prototype.render;
+WorkspaceChrome.prototype.render = function (...args) {
+  const el = render.apply(this, args);
+  return fw(400) !== 400 && el?.font_weight ? el.font_weight(fw(400)) : el;
+};

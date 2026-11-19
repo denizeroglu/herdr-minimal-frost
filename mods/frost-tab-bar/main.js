@@ -1,6 +1,8 @@
 import { View, div, svg, image } from "gpui-kit";
 import { h_flex, ScrollHandle } from "gpui-base";
 import { spaces, panes, run, openOverlay, theme, window, shared, layout, settings } from "herdr";
+// Windows draws text thinner than macOS, so text is one weight step heavier there.
+const fw = (n) => window()?.platform === "windows" ? n + 100 : n;
 
 function find(node, id) {
   if (node?.id === id) return node;
@@ -155,3 +157,10 @@ export default class Tabs extends View {
         .child(button("close-window", w.platform === "windows" ? svg("mods/frost-tab-bar/win-close.svg").size(16) : svg("mods/pane/close.svg").size(13), () => run("window.close"))));
   }
 }
+
+// Plain text inherits the root weight: Medium on Windows, Regular elsewhere.
+const render = Tabs.prototype.render;
+Tabs.prototype.render = function (...args) {
+  const el = render.apply(this, args);
+  return fw(400) !== 400 && el?.font_weight ? el.font_weight(fw(400)) : el;
+};

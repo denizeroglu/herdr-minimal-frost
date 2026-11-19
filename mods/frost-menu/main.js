@@ -7,7 +7,9 @@
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { run, props, closeOverlay, openOverlay, theme, keys, terminals, spaces, panes, exec, readTextFile, appHome } from "herdr";
+import { run, props, closeOverlay, openOverlay, theme, keys, terminals, spaces, panes, exec, readTextFile, appHome, window } from "herdr";
+// Windows draws text thinner than macOS, so text is one weight step heavier there.
+const fw = (n) => window()?.platform === "windows" ? n + 100 : n;
 
 // Where a space is now: its first terminal's live folder, else where it was made.
 function place(s) {
@@ -172,3 +174,10 @@ export default class Menu extends View {
       );
   }
 }
+
+// Plain text inherits the root weight: Medium on Windows, Regular elsewhere.
+const render = Menu.prototype.render;
+Menu.prototype.render = function (...args) {
+  const el = render.apply(this, args);
+  return fw(400) !== 400 && el?.font_weight ? el.font_weight(fw(400)) : el;
+};

@@ -113,6 +113,8 @@ Colours:
 - **Keep `background` translucent.** Making it solid to fix panels removes the main window's glass. Set `popover`/`surface` instead.
 - **Fonts:** Figtree loads from `mods/frost-sidebar/fonts/`. Keep that folder with the mod.
 - **Use static font files.** Herdr doesn't pick weights out of a variable font: Figtree's variable file has a default weight of 300, so every weight rendered Light. Bundle one file per weight instead.
+- **Windows draws text thinner than macOS.** Each frost mod uses `fw(n)`, which adds 100 to every weight on Windows: plain text is Medium there (the mod's root element sets it and children inherit it), Medium becomes SemiBold, and so on. macOS and Linux keep Herdr's default weights. Herdr's own status bar, footer and Files/Changes panel aren't frost mods, so they keep the default weight.
+- **Medium and SemiBold are renamed inside the font files.** Google's static Figtree names their family "Figtree Medium" and "Figtree SemiBold", with "Figtree" only in the typographic family name. Herdr on Windows reads only the first, so a Figtree 500 or 600 request fell back to Regular. Both files now use "Figtree" as their family name (a modified version under the OFL; Figtree has no Reserved Font Name).
 - **Restart after changing fonts.** Herdr loads bundled fonts at start, so replacing font files needs a quit and reopen (terminals keep running).
 - **Your keys.json:** merging this `keys.json` into your own stops Herdr from adding new default shortcuts to that file on updates.
 - **Screenshots:** `herdr-app shot` doesn't capture the desktop behind the window. `preview.png` shows the transparent areas flattened to grey.

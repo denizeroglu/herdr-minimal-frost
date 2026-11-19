@@ -6,6 +6,8 @@
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, ScrollHandle } from "gpui-base";
 import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout } from "herdr";
+// Windows draws text thinner than macOS, so text is one weight step heavier there.
+const fw = (n) => window()?.platform === "windows" ? n + 100 : n;
 
 // Minimal Frost: a very faint outline around the selected row.
 const SELECTED_OUTLINE = "#ffffff1a";
@@ -554,3 +556,10 @@ export default class Spaces extends View {
         .children(list));
   }
 }
+
+// Plain text inherits the root weight: Medium on Windows, Regular elsewhere.
+const render = Spaces.prototype.render;
+Spaces.prototype.render = function (...args) {
+  const el = render.apply(this, args);
+  return fw(400) !== 400 && el?.font_weight ? el.font_weight(fw(400)) : el;
+};
