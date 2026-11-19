@@ -64,7 +64,7 @@
       },
       "min": 44,
       "max": 480,
-      "background": "#313233b3",
+      "background": "#313233a6",
       "resizable": false
     },
     {
@@ -81,7 +81,7 @@
             "px": 42
           },
           "window_drag": true,
-          "background": "#313233b3"
+          "background": "#313233a6"
         },
         {
           "id": "work-body",
@@ -152,7 +152,7 @@
           ],
           "padding": 8,
           "gap": 8,
-          "background": "#313233b3"
+          "background": "#313233a6"
         },
         {
           "id": "status",
@@ -163,7 +163,7 @@
           "size": {
             "px": 28
           },
-          "background": "#313233b3"
+          "background": "#313233a6"
         }
       ],
       "resizable": false
