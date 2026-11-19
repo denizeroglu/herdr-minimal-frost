@@ -24,7 +24,7 @@ Left to right, top to bottom:
 Type:
 
 - **Terminals:** Geist Mono, weight 400 (Regular); size from the person's Settings
-- **Interface:** Figtree, bundled in `mods/frost-sidebar/fonts/` as four static files (Regular 400, Medium 500, SemiBold 600, Bold 700). Text is one step heavier than Herdr's default: regular text 500, medium 600, semibold and bold unchanged.
+- **Interface:** Figtree, bundled in `mods/frost-sidebar/fonts/` as four static files (Regular 400, Medium 500, SemiBold 600, Bold 700), used at Herdr's default weights.
 
 Colours:
 
@@ -66,20 +66,20 @@ Colours:
   │  ├─ sidebar-lists column
   │  │  ├─ spaces block ………………………… frost-spaces
   │  │  └─ agents block ………………………… frost-agents
-  │  └─ sidebar-footer block 69px ………… frost-sidebar {footer: true}
+  │  └─ sidebar-footer block 69px ………… workspace-chrome {footer: true}   (shipped)
   └─ work column
      ├─ tabs block 42px, window_drag, #313233b3 … frost-tab-bar
      ├─ work-body row, padding 8, #313233b3
      │  ├─ main block: tab active, pane frame (header frost-pane-header, radius 12, gap 8)
-     │  └─ panel column (hidden): frost-files / frost-changes stack
-     └─ status block 28px, #313233b3 ……… frost-status
+     │  └─ panel column (hidden): files / changes stack   (shipped)
+     └─ status block 28px, #313233b3 ……… workspace-status   (shipped)
   ```
   Root settings:
   - `ui_font` Figtree, `font` Geist Mono, `font_weight` 400; no `font_size`, so Settings controls it
   - `terminal_padding` [24, 24], `terminal_opacity` 0
   - `terminal_menu` frost-menu
   - `colors` as listed under What you see
-- **Mods:** each is a copy of one of Herdr's own mods, renamed and changed as below. Every frost mod also sets `.font_weight(500)` on its outermost element (so its text is Figtree Medium unless styled otherwise) and uses `.font_semibold()` where the original had `.font_medium()`.
+- **Mods:** each is a copy of one of Herdr's own mods, renamed and changed as below.
 
   | Mod | Copied from | Change |
   |---|---|---|
@@ -90,12 +90,9 @@ Colours:
   | `frost-pane-header` | `pane` | no background |
   | `frost-menu` | `menu` | `.rounded(12)`; adds **Move to space…** to the terminal menu and to the menu of a one-pane tab, only when the separate [move-to-space](https://github.com/denizeroglu/herdr-move-to-space) mod is installed (it checks for `mods/move-to-space/main.js`) |
   | `frost-new-menu` | `new-menu` | `.rounded(12)` |
-  | `frost-status` | `workspace-status` | weights only |
-  | `frost-files` | `files` | weights only |
-  | `frost-changes` | `changes` | weights only |
   | `frost-picker` | `picker` | `.rounded(12)`; no letter tiles on space headings; tabs listed by the same name the tab bar shows (an agent's live title) rather than their number |
 
-- **Shipped assets used:** icons from `mods/workspace-chrome/`, `mods/pane/`, `mods/files/` and `mods/changes/`. Herdr's own screens (command palette, Settings, confirm and prompt dialogs, notifications) keep Herdr's weights.
+- **Shipped mods used as they are:** `workspace-chrome` (footer), `workspace-status`, `files` and `changes`, plus icons from `mods/workspace-chrome/` and `mods/pane/`.
 - **Herdr functions and commands:** the copied mods call the same ones as the originals: `run`, `openOverlay`, `spaces()`, `agents()`, `panes()`, `layout()`, and `mod.open`.
 - **Programs run** (all inherited from Herdr's originals):
   - `frost-spaces` runs `git` in each space's folder, calls `hc` and watches the folder.

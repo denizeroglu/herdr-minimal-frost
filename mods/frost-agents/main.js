@@ -143,7 +143,7 @@ export default class Agents extends View {
 
   sortMenu(t) {
     const on = sortOf().id;
-    return v_flex().font_weight(500)
+    return v_flex()
       .w_full()
       .p(5)
       .rounded(12).bg(t.popover)
@@ -399,7 +399,7 @@ export default class Agents extends View {
         .gap(6)
         .items_center()
         .text_size(11)
-        .font_semibold()
+        .font_medium()
         .cursor_pointer()
         .hover((s) => s.text_color(t.foreground))
         .on_click((_e, cx) => {
@@ -417,7 +417,7 @@ export default class Agents extends View {
       ? list.flatMap(withKids)
       : groups.flatMap((g) => [header(g), ...(this.folded.has(g.id) ? [] : g.members.flatMap(withKids))]);
 
-    return v_flex().font_weight(500)
+    return v_flex()
       .size_full()
       .min_h(0)
       .bg(t.chrome)
@@ -434,7 +434,7 @@ export default class Agents extends View {
             .flex_none()
             .items_center()
             .justify_between()
-            .child(div().text_size(11.5).font_semibold().text_color(t.dim).child("Agents"))
+            .child(div().text_size(11.5).font_medium().text_color(t.dim).child("Agents"))
             .child(
               div()
                 .id("ag-sort")

@@ -133,7 +133,7 @@ export default class Menu extends View {
   render(cx) {
     const t = theme();
     const list = items(props(), this.git, this.canMove);
-    return v_flex().font_weight(500)
+    return v_flex()
       .id("menu")
       .track_focus(this.handle)
       .w_full()
