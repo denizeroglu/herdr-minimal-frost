@@ -1,6 +1,6 @@
 # Minimal Frost
 
-A quiet, frosted layout for [Herdr](https://herdr.dev). One grey glass tint across the whole window, no dividing lines, clear terminals over the blurred desktop, softly rounded panes and popups, Figtree and Geist Mono, and a Ghostty-derived terminal palette.
+A quiet, frosted layout for [Herdr](https://herdr.dev). One grey glass tint across the whole window, no dividing lines, clear terminals over the blurred desktop, softly rounded panes and popups, Figtree and Geist Mono, and its own terminal palette.
 
 ![Minimal Frost](preview.png)
 
