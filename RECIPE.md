@@ -24,7 +24,7 @@ Left to right, top to bottom:
 Type:
 
 - **Terminals:** Geist Mono, weight 400 (Regular); size from the person's Settings
-- **Interface:** Figtree (variable, bundled in `mods/frost-sidebar/fonts/`)
+- **Interface:** Figtree, bundled in `mods/frost-sidebar/fonts/` as four static files (Regular 400, Medium 500, SemiBold 600, Bold 700). Text is one step heavier than Herdr's default: regular text 500, medium 600, semibold and bold unchanged.
 
 Colours:
 
@@ -66,20 +66,20 @@ Colours:
   │  ├─ sidebar-lists column
   │  │  ├─ spaces block ………………………… frost-spaces
   │  │  └─ agents block ………………………… frost-agents
-  │  └─ sidebar-footer block 69px ………… workspace-chrome {footer: true}   (shipped)
+  │  └─ sidebar-footer block 69px ………… frost-sidebar {footer: true}
   └─ work column
      ├─ tabs block 42px, window_drag, #313233b3 … frost-tab-bar
      ├─ work-body row, padding 8, #313233b3
      │  ├─ main block: tab active, pane frame (header frost-pane-header, radius 12, gap 8)
-     │  └─ panel column (hidden): files / changes stack   (shipped)
-     └─ status block 28px, #313233b3 ……… workspace-status   (shipped)
+     │  └─ panel column (hidden): frost-files / frost-changes stack
+     └─ status block 28px, #313233b3 ……… frost-status
   ```
   Root settings:
   - `ui_font` Figtree, `font` Geist Mono, `font_weight` 400; no `font_size`, so Settings controls it
   - `terminal_padding` [24, 24], `terminal_opacity` 0
   - `terminal_menu` frost-menu
   - `colors` as listed under What you see
-- **Mods:** each is a copy of one of Herdr's own mods, renamed and changed as below.
+- **Mods:** each is a copy of one of Herdr's own mods, renamed and changed as below. Every frost mod also sets `.font_weight(500)` on its outermost element (so its text is Figtree Medium unless styled otherwise) and uses `.font_semibold()` where the original had `.font_medium()`.
 
   | Mod | Copied from | Change |
   |---|---|---|
@@ -90,9 +90,12 @@ Colours:
   | `frost-pane-header` | `pane` | no background |
   | `frost-menu` | `menu` | `.rounded(12)`; adds **Move to space…** to the terminal menu and to the menu of a one-pane tab, only when the separate [move-to-space](https://github.com/denizeroglu/herdr-move-to-space) mod is installed (it checks for `mods/move-to-space/main.js`) |
   | `frost-new-menu` | `new-menu` | `.rounded(12)` |
+  | `frost-status` | `workspace-status` | weights only |
+  | `frost-files` | `files` | weights only |
+  | `frost-changes` | `changes` | weights only |
   | `frost-picker` | `picker` | `.rounded(12)`; no letter tiles on space headings; tabs listed by the same name the tab bar shows (an agent's live title) rather than their number |
 
-- **Shipped mods used as they are:** `workspace-chrome` (footer), `workspace-status`, `files` and `changes`, plus icons from `mods/workspace-chrome/` and `mods/pane/`.
+- **Shipped assets used:** icons from `mods/workspace-chrome/`, `mods/pane/`, `mods/files/` and `mods/changes/`. Herdr's own screens (command palette, Settings, confirm and prompt dialogs, notifications) keep Herdr's weights.
 - **Herdr functions and commands:** the copied mods call the same ones as the originals: `run`, `openOverlay`, `spaces()`, `agents()`, `panes()`, `layout()`, and `mod.open`.
 - **Programs run** (all inherited from Herdr's originals):
   - `frost-spaces` runs `git` in each space's folder, calls `hc` and watches the folder.
@@ -112,6 +115,8 @@ Colours:
 - **Dialogs, menus and Settings** can't be frosted. Herdr has no blur for its own content, so they're solid `#313233` (`popover`, `surface`); anything translucent lets terminal text show through.
 - **Keep `background` translucent.** Making it solid to fix panels removes the main window's glass. Set `popover`/`surface` instead.
 - **Fonts:** Figtree loads from `mods/frost-sidebar/fonts/`. Keep that folder with the mod.
+- **Use static font files.** Herdr doesn't pick weights out of a variable font: Figtree's variable file has a default weight of 300, so every weight rendered Light. Bundle one file per weight instead.
+- **Restart after changing fonts.** Herdr loads bundled fonts at start, so replacing font files needs a quit and reopen (terminals keep running).
 - **Your keys.json:** merging this `keys.json` into your own stops Herdr from adding new default shortcuts to that file on updates.
 - **Screenshots:** `herdr-app shot` doesn't capture the desktop behind the window. `preview.png` shows the transparent areas flattened to grey.
 

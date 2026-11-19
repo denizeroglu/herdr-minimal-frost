@@ -25,7 +25,7 @@ herdr-app do layout.switch '{"name":"minimal-frost"}'
 ## Notes
 
 - Works on macOS, Windows and Linux. The glass needs window blur (macOS, Windows, some Wayland compositors); without it the tint looks flat.
-- Figtree (the UI font) is bundled in `mods/frost-sidebar/fonts/`, so nothing needs installing.
+- Figtree (the UI font) is bundled in `mods/frost-sidebar/fonts/` as static Regular, Medium, SemiBold and Bold files, so nothing needs installing. Restart Herdr once after installing so it loads them.
 - The terminal font size follows your own Settings; the layout doesn't set it.
 - The `frost-spaces`, `frost-menu` and `frost-picker` mods run `git` and `hc` locally, the same as the Herdr mods they're copied from. No network access.
 - [RECIPE.md](RECIPE.md) describes the layout in full, for rebuilding it from scratch.

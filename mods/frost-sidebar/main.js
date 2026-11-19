@@ -39,13 +39,13 @@ export default class WorkspaceChrome extends View {
         .on_click(action).child(svg(`mods/frost-sidebar/${icon}.svg`).size(14))
         .when(!collapsed, el => el.child(label));
       const ready = div().size(6).rounded_full().bg(t.accent);
-      return v_flex().size_full().bg(t.chrome).border_t(1).border_color(t.border).px(8).pt(4).pb(8).text_size(13)
+      return v_flex().font_weight(500).size_full().bg(t.chrome).border_t(1).border_color(t.border).px(8).pt(4).pb(8).text_size(13)
         .when(collapsed, el => el.px(0).items_center())
         .child(row("settings", "settings", "Settings", false, () => run("app.settings"))
           .when(Boolean(updates().app.ready), el => el.child(collapsed ? ready.absolute().top(5).right(6) : ready)))
         .child(row("machine", "plus", "Add machine", true, () => run("mod.open", { name: "machine-add" })));
     }
-    return h_flex().size_full().bg(t.chrome).pl(collapsed ? 6 : 14).pr(10).gap(4).items_center().text_size(13.5)
+    return h_flex().font_weight(500).size_full().bg(t.chrome).pl(collapsed ? 6 : 14).pr(10).gap(4).items_center().text_size(13.5)
       .when(window()?.platform === "macos" && !window()?.fullscreen && !collapsed, el => el.pl(76))
       .when(!collapsed, el => el.child(div().flex_1()))
       .when(!collapsed, el => el.child(this.button("search", svg("mods/frost-sidebar/search.svg").size(15), () => run("mod.open", { name: "frost-picker" }))))

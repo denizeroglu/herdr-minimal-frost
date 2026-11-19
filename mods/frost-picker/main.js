@@ -237,7 +237,7 @@ export default class Picker extends View {
         .child(div().text_size(11).text_color(t.dim).child(who + (r.team ? `  +${r.team}` : "")));
     };
 
-    return v_flex()
+    return v_flex().font_weight(500)
       .id("picker")
       .track_focus(this.handle)
       .w_full()

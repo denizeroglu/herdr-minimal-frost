@@ -49,7 +49,7 @@
           "id": "sidebar-footer",
           "type": "block",
           "content": {
-            "mod": "workspace-chrome",
+            "mod": "frost-sidebar",
             "props": {
               "footer": true
             }
@@ -128,14 +128,14 @@
                       "id": "files",
                       "type": "block",
                       "content": {
-                        "mod": "files"
+                        "mod": "frost-files"
                       }
                     },
                     {
                       "id": "changes",
                       "type": "block",
                       "content": {
-                        "mod": "changes"
+                        "mod": "frost-changes"
                       }
                     }
                   ],
@@ -158,7 +158,7 @@
           "id": "status",
           "type": "block",
           "content": {
-            "mod": "workspace-status"
+            "mod": "frost-status"
           },
           "size": {
             "px": 28
