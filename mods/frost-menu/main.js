@@ -4,6 +4,8 @@
 // a command "worktree" opens the worktree dialog instead.
 // Minimal Frost: "Move to space…" appears when the separate move-to-space mod
 // is installed (mods/move-to-space), and opens it for the clicked session.
+// Likewise "Join with…" (tab menu) and "Move to new tab" (pane menu, split tabs)
+// appear when the separate join-tabs mod is installed (mods/join-tabs).
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
@@ -25,7 +27,7 @@ async function checkout(folder, on) {
   return common.stdout.trim() === `${top.stdout.trim()}/.git` ? "main" : "linked";
 }
 
-function items(p, git, canMove) {
+function items(p, git, canMove, canJoin) {
   p = p ?? {};
   const tg = p.target ?? {};
   switch (p.tab) {
@@ -48,6 +50,8 @@ function items(p, git, canMove) {
             ]
           : []),
         ...(inTab && canMove && term ? [["Move to space…", "mod.open", { name: "move-to-space", terminal: term.address }]] : []),
+        ...(inTab && canJoin && term && panes().filter((pane) => pane.tab === panes().find((x) => x.pane === tg.pane)?.tab).length > 1
+          ? [["Move to new tab", "mod.open", { action: "separate", name: "join-tabs", terminal: term.address }]] : []),
         ...(term
           ? [
               toProgram
@@ -65,6 +69,7 @@ function items(p, git, canMove) {
       return [
         ["Rename", "tab.rename", { id: tg.id }],
         ...(canMove && only.length === 1 && only[0].terminal ? [["Move to space…", "mod.open", { name: "move-to-space", terminal: only[0].terminal }]] : []),
+        ...(canJoin && (spaces().find((s) => s.id === tg.space)?.tabs.length ?? 0) > 1 ? [["Join with…", "mod.open", { name: "join-tabs", tab: tg.id }]] : []),
         ["New tab", "tab.new", { space: tg.space }],
         ["Close", "tab.close", { id: tg.id }],
       ];
@@ -106,9 +111,11 @@ export default class Menu extends View {
     this.at = 0;
     this.git = null;
     this.canMove = false;
+    this.canJoin = false;
     cx.spawn(async (cx) => {
       const found = await readTextFile(`${appHome()}/mods/move-to-space/main.js`).catch(() => null);
       this.canMove = Boolean(found);
+      this.canJoin = Boolean(await readTextFile(`${appHome()}/mods/join-tabs/main.js`).catch(() => null));
       cx.notify();
     });
     this.handle = cx.focus_handle();
@@ -124,17 +131,18 @@ export default class Menu extends View {
   }
 
   choose(i, cx) {
-    const it = items(props(), this.git, this.canMove)[i];
+    const it = items(props(), this.git, this.canMove, this.canJoin)[i];
     if (!it) return;
     closeOverlay(props()?.overlay);
-    if (it[1] === "mod.open" && it[2].name === "move-to-space") openOverlay({ mod: "move-to-space", kind: "popup", width: 400, props: { terminal: it[2].terminal } });
+    if (it[1] === "mod.open" && it[2].name === "join-tabs") openOverlay({ mod: "join-tabs", kind: "popup", width: 400, props: it[2] });
+    else if (it[1] === "mod.open" && it[2].name === "move-to-space") openOverlay({ mod: "move-to-space", kind: "popup", width: 400, props: { terminal: it[2].terminal } });
     else if (it[1] === "worktree") openOverlay({ mod: "worktree", kind: "dialog", ...(it[2].action === "open" ? { width: 560, height: 480 } : { width: 440, height: 260 }), props: it[2] });
     else run(it[1], it[2]);
   }
 
   render(cx) {
     const t = theme();
-    const list = items(props(), this.git, this.canMove);
+    const list = items(props(), this.git, this.canMove, this.canJoin);
     return v_flex()
       .id("menu")
       .track_focus(this.handle)
