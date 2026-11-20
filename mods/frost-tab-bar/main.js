@@ -1,6 +1,17 @@
 import { View, div, svg, image } from "gpui-kit";
 import { h_flex, ScrollHandle } from "gpui-base";
-import { spaces, panes, run, openOverlay, theme, window, shared, layout, settings } from "herdr";
+import { spaces, panes, run, openOverlay, theme, window, shared, setShared, layout, settings } from "herdr";
+
+// A pane dragged from frost-pane-header ("frost.drag") joins the tab it is
+// released on; released on empty space here, a pane from a split tab moves
+// out to a new tab. Both go through the join-tabs mod. A drag released
+// anywhere else can't be seen (a terminal isn't a mod), so it expires, and
+// any new press on a tab clears it first.
+const DRAG_TTL = 6000;
+const liveDrag = () => {
+  const d = shared("frost.drag");
+  return d && Date.now() - d.at < DRAG_TTL && panes().some((p) => p.terminal === d.terminal) ? d : null;
+};
 // Windows draws text thinner than macOS, so text is one weight step heavier there.
 const fw = (n) => window()?.platform === "windows" ? n + 100 : n;
 
@@ -103,17 +114,28 @@ export default class Tabs extends View {
     const stop = (_e, cx) => cx.stop_propagation();
     const button = (id, label, action) => div().id(id).size(26).flex_none().flex().items_center().justify_center().rounded(6).text_color(t.dim).hover(s => s.bg(t.hover).text_color(t.foreground))
       .on_mouse_down("left", stop).on_click(action).child(label);
+    const drag = liveDrag();
     const item = (c, i) => {
+      const target = Boolean(drag) && c.id !== drag.tab && this.dropOver === c.id;
       const lead = panes().find(p => p.tab === c.id && p.program?.agent) ?? panes().find(p => p.tab === c.id);
       const program = lead?.program;
       const name = label(c, lead);
       return h_flex().id(`tab-${c.id}`).h(29).px(10).gap(7).rounded(7).items_center().flex_none().text_size(12.8)
         // A rename or status dot on this or an earlier tab can push the active one out.
         .when(i <= active, el => el.on_size_change((_size, cx) => { this.scroll.scroll_to_item(active); cx.notify(); }))
-        .border(1).border_color(c.active ? "#ffffff1a" : t.chrome).bg(c.active ? t.selected : t.chrome).text_color(c.active ? t.foreground : t.muted)
+        .border(1).border_color(target ? t.accent : c.active ? "#ffffff1a" : t.chrome).bg(target ? t.selected : c.active ? t.selected : t.chrome).text_color(c.active || target ? t.foreground : t.muted)
         .hover(s => s.bg(t.hover))
-        .on_mouse_down("left", (e, cx) => { cx.stop_propagation(); this.pressed = i; if (e.click_count === 2) run("tab.rename", { id: c.id }); })
-        .on_mouse_up("left", () => {
+        .on_hover((over, cx) => { if (over) this.dropOver = c.id; else if (this.dropOver === c.id) this.dropOver = null; if (liveDrag()) cx.notify(); })
+        .on_mouse_down("left", (e, cx) => { cx.stop_propagation(); if (shared("frost.drag")) setShared("frost.drag", null); this.pressed = i; if (e.click_count === 2) run("tab.rename", { id: c.id }); })
+        .on_mouse_up("left", (_e, cx) => {
+          const d = liveDrag();
+          if (d) {
+            cx.stop_propagation();
+            setShared("frost.drag", null);
+            this.dropOver = null;
+            if (c.id !== d.tab) openOverlay({ mod: "join-tabs", kind: "popup", width: 400, props: { action: "join-pane", terminal: d.terminal, to: c.id } });
+            return;
+          }
           const from = this.pressed; this.pressed = null;
           if (from !== null && from !== i) run("tab.move", { id: shown[from].id, index: space.tabs.findIndex(x => x.id === c.id) + 1 });
           else run("tab.select", { id: c.id });
@@ -143,12 +165,27 @@ export default class Tabs extends View {
           else { run("layout.select", { stack: "panel-body", child: id }); run("layout.show", { id: "panel" }); }
         }).child(svg(icon).size(14)).child(label);
     };
-    return h_flex().size_full().min_w(0).px(10).pl(lightsPadding).gap(3).items_center().bg(t.chrome).border_b(1).border_color(t.border)
-      .on_mouse_up("left", () => { this.pressed = null; })
+    return h_flex().id("frost-tab-bar").size_full().min_w(0).px(10).pl(lightsPadding).gap(3).items_center().bg(t.chrome).border_b(1).border_color(t.border)
+      .on_mouse_up("left", () => {
+        this.pressed = null;
+        const d = liveDrag();
+        if (shared("frost.drag")) setShared("frost.drag", null);
+        // Dropped on empty space: a pane from a split tab gets a tab of its own.
+        if (d && panes().filter((p) => p.tab === d.tab).length > 1)
+          openOverlay({ mod: "join-tabs", kind: "popup", width: 400, props: { action: "separate", terminal: d.terminal } });
+      })
+      .when(Boolean(drag), (el) => el.cursor_grabbing())
+      .on_hover((over, cx) => { this.barHover = over; if (liveDrag()) cx.notify(); })
       .on_scroll_wheel(e => this.wheel(e))
       .child(h_flex().id("tab-scroll").flex_1().min_w(0).h_full().items_center().gap(3).overflow_x_scrollbar().track_scroll(this.scroll)
         .on_size_change((_size, cx) => { if (active >= 0) { this.scroll.scroll_to_item(active); cx.notify(); } })
-        .children(shown.map(item)))
+        .children(shown.map(item))
+        .when(Boolean(drag) && this.barHover && panes().filter((p) => p.tab === drag.tab).length > 1, (el) => el.child(
+          h_flex().id("tab-drop-new").h(29).px(10).gap(6).flex_none().items_center().rounded(7)
+            .border(1).border_dashed().border_color(this.dropOver === "new" ? t.accent : t.dim)
+            .text_size(12.8).text_color(this.dropOver === "new" ? t.foreground : t.muted)
+            .on_hover((over, cx) => { this.dropOver = over ? "new" : this.dropOver === "new" ? null : this.dropOver; cx.notify(); })
+            .child("+ New tab"))))
       .child(button("tab-new", "+", () => openOverlay({ mod: "frost-new-menu", kind: "popup", width: 250, height: 512 })))
       .when(enabled.includes("files"), el => el.child(panelButton("files", "Files", "mods/files/file.svg")))
       .when(enabled.includes("changes"), el => el.child(panelButton("changes", "Changes", "mods/changes/changes.svg")))

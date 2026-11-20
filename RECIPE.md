@@ -54,7 +54,8 @@ Colours:
   - **Still square:** the command palette (⌘⇧P), which is Herdr's own screen and can't be modified
 - **Hover:** tabs, rows and buttons show a 4% white highlight (`#ffffff0a`).
 - **Move to space…** (optional): with the separate [move-to-space](https://github.com/denizeroglu/herdr-move-to-space) mod installed, the terminal menu and the menu of a one-pane tab offer it for the clicked session. Without the mod the item doesn't appear.
-- **Join with… / Move to new tab** (optional): with a `join-tabs` mod installed, a tab's menu offers to join it beside another tab of the same space, and a pane in a split tab can move out to a tab of its own. Without the mod the items don't appear.
+- **Join with… / Move to new tab** (optional): with the separate [join-tabs](https://github.com/denizeroglu/herdr-join-tabs) mod installed, a tab's menu offers to join it beside another tab of the same space, and a pane in a split tab can move out to a tab of its own. Without the mod the items don't appear.
+- **Drag a pane to the tab bar** (optional, with join-tabs installed): press a pane's title row (or the grip on a one-pane tab) and drag. Released on a tab, the pane joins it on the right; released on empty space in the tab bar, a pane from a split tab moves to a new tab. Herdr's own grip on split panes still rearranges panes inside the tab.
 - **Unchanged from Herdr:** pane dragging, splits, zoom, the Files/Changes panel, sidebar resizing and collapsing.
 
 ## Built from
@@ -87,9 +88,9 @@ Colours:
   | `frost-sidebar` | `workspace-chrome` | logo and "Herdr" title removed; search opens `frost-picker` |
   | `frost-spaces` | `spaces` | coloured letter tile removed from rows (kept on the collapsed rail); selected row gets a 1 px `#ffffff1a` outline; space menu opens `frost-menu` |
   | `frost-agents` | `agents` | no program icons on agent rows; the focused agent (and a shown sub-agent) gets the selection fill with a 1 px `#ffffff1a` outline; Sort agents popup gets `.rounded(12)` |
-  | `frost-tab-bar` | `tabs` | active tab fill `selected` (was `raised`) with a 1 px `#ffffff1a` outline; tab menu opens `frost-menu`, + opens `frost-new-menu` |
-  | `frost-pane-header` | `pane` | no background |
-  | `frost-menu` | `menu` | `.rounded(12)`; adds **Move to space…** to the terminal menu and to the menu of a one-pane tab, only when the separate [move-to-space](https://github.com/denizeroglu/herdr-move-to-space) mod is installed (it checks for `mods/move-to-space/main.js`); likewise **Join with…** (tab menu, when the space has another tab) and **Move to new tab** (pane menu, in a split tab) when a `join-tabs` mod is installed (`mods/join-tabs/main.js`) |
+  | `frost-tab-bar` | `tabs` | active tab fill `selected` (was `raised`) with a 1 px `#ffffff1a` outline; tab menu opens `frost-menu`, + opens `frost-new-menu`; with join-tabs installed, accepts a pane dragged from a pane title (`shared("frost.drag")`): a tab under the pointer gets an `accent` outline and joins the pane on release, and empty space shows a dashed **+ New tab** zone that moves a pane from a split tab out to its own tab |
+  | `frost-pane-header` | `pane` | no background; with join-tabs installed, the title row starts a drag (`cursor_grab`), and a one-pane tab shows a grip drawn like Herdr's own (28×20 `#00000033` box, six 2 pt `#ffffff73` dots) |
+  | `frost-menu` | `menu` | `.rounded(12)`; adds **Move to space…** to the terminal menu and to the menu of a one-pane tab, only when the separate [move-to-space](https://github.com/denizeroglu/herdr-move-to-space) mod is installed (it checks for `mods/move-to-space/main.js`); likewise **Join with…** (tab menu, when the space has another tab) and **Move to new tab** (pane menu, in a split tab) when the separate [join-tabs](https://github.com/denizeroglu/herdr-join-tabs) mod is installed (`mods/join-tabs/main.js`) |
   | `frost-new-menu` | `new-menu` | `.rounded(12)` |
   | `frost-picker` | `picker` | `.rounded(12)`; no letter tiles on space headings; tabs listed by the same name the tab bar shows (an agent's live title) rather than their number |
 
@@ -119,6 +120,8 @@ Colours:
 - **Restart after changing fonts.** Herdr loads bundled fonts at start, so replacing font files needs a quit and reopen (terminals keep running).
 - **Your keys.json:** merging this `keys.json` into your own stops Herdr from adding new default shortcuts to that file on updates.
 - **Screenshots:** `herdr-app shot` doesn't capture the desktop behind the window; it saves the glass as semi-transparent pixels, which look flat grey on a plain page. `preview.png` and `layouts/minimal-frost.png` are those shots composited over a blurred, generated colour backdrop so the glass reads as glass.
+
+- **Drags between mods:** gpui-kit has no drag and drop between mods, so the drag is shared state set on mouse down in the pane title and read on mouse up in the tab bar. A release over a terminal can't be seen (a terminal isn't a mod), so a drag expires after 6 s and any new press on a tab clears it.
 
 ## Done when
 

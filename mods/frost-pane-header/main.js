@@ -5,8 +5,15 @@
 // this pane. Props from the app: { pane, terminal }. Click: focus the pane.
 
 import { View, div, svg, image } from "gpui-kit";
-import { h_flex } from "gpui-base";
-import { panes, props, run, theme, home, layout, window } from "herdr";
+import { h_flex, v_flex } from "gpui-base";
+import { panes, props, run, theme, home, layout, window, shared, setShared, readTextFile, appHome } from "herdr";
+
+// Minimal Frost, when the join-tabs mod is installed: press this title row (or,
+// on a one-pane tab, the grip like Herdr's own) and drag to the tab bar.
+// Dropped on a tab, the pane joins it; dropped on empty space in the tab bar,
+// a pane from a split tab moves out to a tab of its own. Herdr's own grip on
+// split panes still rearranges panes inside the tab. The drag is shared state
+// ("frost.drag") the tab bar reads.
 // Windows draws text thinner than macOS, so text is one weight step heavier there.
 const fw = (n) => window()?.platform === "windows" ? n + 100 : n;
 
@@ -38,7 +45,31 @@ function folder(cwd) {
 }
 
 export default class Pane extends View {
-  init() { this.hovered = false; }
+  init(_props, cx) {
+    this.hovered = false;
+    this.canJoin = false;
+    cx.spawn(async (cx) => {
+      this.canJoin = Boolean(await readTextFile(`${appHome()}/mods/join-tabs/main.js`).catch(() => null));
+      cx.notify();
+    });
+  }
+
+  grip(t, p) {
+    // Drawn like Herdr's own pane grip: a dark 28×20 box, six 2 pt dots 5 pt apart.
+    const dots = () => h_flex().gap(3).children([0, 1, 2].map(() => div().size(2).rounded_full().bg("#ffffff73")));
+    return div().absolute().top(0).bottom(0).left(0).right(0).flex().items_center().justify_center()
+      .child(v_flex().id(`ph-grip-${p.pane}`).w(28).h(20).gap(3).items_center().justify_center().rounded(6).bg("#00000033").cursor_grab()
+        .hover((s) => s.bg("#00000047"))
+        .tooltip("Drag onto a tab to join it")
+        .on_mouse_down("left", (_e, cx) => {
+          cx.stop_propagation();
+          setShared("frost.drag", { terminal: p.terminal, tab: p.tab, at: Date.now() });
+          cx.notify();
+        })
+        // Let go on the grip itself: it was a click, not a drag.
+        .on_mouse_up("left", (_e, cx) => { setShared("frost.drag", null); cx.notify(); })
+        .child(dots()).child(dots()));
+  }
 
   me() {
     return panes().find((p) => p.pane === props()?.pane);
@@ -67,8 +98,13 @@ export default class Pane extends View {
     const st = p.status;
     const pane = p.pane;
     const bottom = paneFrame(layout())?.header?.position === "bottom";
+    const alone = panes().filter((x) => x.tab === p.tab).length === 1 && !p.zoomed;
+    const drag = shared("frost.drag");
+    const dragging = drag?.terminal === p.terminal;
+    const startDrag = () => setShared("frost.drag", { terminal: p.terminal, tab: p.tab, at: Date.now() });
     return h_flex()
       .id(`pane-head-${pane}`)
+      .relative()
       .size_full()
       .px(10)
       .gap(8)
@@ -79,12 +115,17 @@ export default class Pane extends View {
       .text_size(12)
       .on_hover((hovered, cx) => { this.hovered = hovered; cx.notify(); })
       .on_click(() => run("pane.focus", { pane }))
+      .when(this.canJoin && Boolean(p.terminal), (el) => el.cursor_grab()
+        .on_mouse_down("left", (_e, cx) => { startDrag(); cx.notify(); }))
+      // Released on its own title row: a click, not a drag.
+      .on_mouse_up("left", (_e, cx) => { if (shared("frost.drag")?.terminal === p.terminal) { setShared("frost.drag", null); cx.notify(); } })
       .when(Boolean(pic), (el) => el.child(pic))
       .child(div().flex_none().truncate().max_w(260).font_weight(fw(500)).text_color(t.foreground).child(name))
       .child(div().flex_1().truncate().text_color(t.dim).child(folder(p.cwd)))
       .when(st === "working", el => el.child(svg("mods/workspace-chrome/spinner.svg").size(12).flex_none().text_color(t.working).spin(900)))
       .when(st === "blocked", el => el.child(div().flex_none().px(6).h(18).flex().items_center().rounded(5).bg(t.blocked + "26").text_size(10.5).font_weight(fw(600)).text_color(t.blocked).child("Needs you")))
       .when(st === "done", el => el.child(div().size(7).flex_none().rounded(4).bg(t.done)))
+      .when(this.canJoin && alone && Boolean(p.terminal) && (this.hovered || dragging), (el) => el.child(this.grip(t, p)))
       .when(this.hovered, el => el
         .child(this.button(t, `ph-r-${pane}`, "split-right", "pane.split", { direction: "right", pane }))
         .child(this.button(t, `ph-d-${pane}`, "split-down", "pane.split", { direction: "down", pane }))
